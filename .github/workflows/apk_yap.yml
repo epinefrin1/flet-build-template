@@ -1,0 +1,44 @@
+name: Android APK Yap
+
+on:
+  workflow_dispatch: # Butonla başlatmak için
+
+jobs:
+  apk-yap:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Depoyu Çek
+      uses: actions/checkout@v3
+
+    - name: Python Kur
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Java Kur (Android için gerekli)
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Flutter Kur (Flet için gerekli)
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+
+    - name: Flet Yükle
+      run: |
+        pip install flet
+        # requirements.txt varsa yükle
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: APK Oluştur (Build)
+      run: |
+        # Klasördeki main.py dosyasını APK yapar
+        flet build apk --project "Turnuva" --no-android-signing
+
+    - name: APK'yı İndirilebilir Yap
+      uses: actions/upload-artifact@v3
+      with:
+        name: turnuva-apk
+        path: build/apk/app-release.apk
