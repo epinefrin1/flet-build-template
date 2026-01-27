@@ -173,4 +173,5 @@ def main(page: ft.Page):
 # Başlat
 # Bilgisayarın yerel ağında yayına başla
 # Düzeltilmiş Satır:
-ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=8550, host="0.0.0.0")
+ft.app(target=main)
+
