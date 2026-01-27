@@ -171,7 +171,6 @@ def main(page: ft.Page):
     verileri_getir()
 
 # Başlat
-# Bilgisayarın yerel ağında yayına başla
-# Düzeltilmiş Satır:
 ft.app(target=main)
+
 
