@@ -34,13 +34,12 @@ jobs:
     - name: Gereklilikleri Yükle
       run: |
         pip install flet
-        # requirements.txt varsa onu da yükle
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Flet APK Build (Sadeleştirilmiş)
+    - name: Flet APK Build
       run: |
-        # Sadece bu komut yeterlidir, otomatik olarak main.py'yi bulur
-        flet build apk --no-android-signing --verbose
+        # Hatalı komutları sildik. En sade ve çalışan hali budur:
+        flet build apk --project "TurnuvaApp" --verbose
 
     - name: APK Dosyasını Yükle
       uses: actions/upload-artifact@v4
