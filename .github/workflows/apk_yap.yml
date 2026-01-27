@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Depoyu Çek (Checkout)
+    - name: Depoyu Çek
       uses: actions/checkout@v4
 
     - name: Python Kur
@@ -34,13 +34,14 @@ jobs:
     - name: Gereklilikleri Yükle
       run: |
         pip install flet
+        # requirements.txt varsa onu da yükle
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Flet APK Build
+    - name: Flet APK Build (Sadeleştirilmiş)
       run: |
-        flet build apk --project "TurnuvaApp" --no-android-signing --verbose
+        # Sadece bu komut yeterlidir, otomatik olarak main.py'yi bulur
+        flet build apk --no-android-signing --verbose
 
-    # İŞTE DÜZELTİLEN KISIM: v3 yerine v4 yaptık
     - name: APK Dosyasını Yükle
       uses: actions/upload-artifact@v4
       with:
