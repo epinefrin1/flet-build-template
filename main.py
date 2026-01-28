@@ -31,7 +31,7 @@ def main(page: ft.Page):
         return
 
     # --- ARAYÜZ ELEMANLARI ---
-    lbl_baslik = ft.Text("PUAN DURUMU", size=30, weight="bold", text_align="center")
+    lbl_baslik = ft.Text("PES ŞAMPİYONLAR LİGİ", size=30, weight="bold", text_align="center")
     
     # --- LOGOLAR (DÜZELTİLDİ: BAŞINA / EKLENDİ) ---
     # Başındaki / işareti "assets klasörünün en tepesine bak" demektir.
@@ -190,3 +190,4 @@ def main(page: ft.Page):
 # assets_dir="assets" klasörünü tanımladık.
 # Resimlere erişirken artık /takim1.png diyeceğiz.
 ft.app(target=main, assets_dir="assets")
+
