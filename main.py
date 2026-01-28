@@ -3,6 +3,10 @@ import sqlite3
 from datetime import datetime
 import os
 
+# --- VERİTABANI DOSYA YOLU ---
+# Veritabanı için 'os' kullanmak zorundayız ama assets için kullanmayacağız.
+db_file = "turnuva_mobil.db"
+
 def main(page: ft.Page):
     # --- AYARLAR ---
     page.title = "KNORGY FC vs EFSANE FUTBOL"
@@ -11,11 +15,9 @@ def main(page: ft.Page):
     page.padding = 20
     
     # --- VERİTABANI BAĞLANTISI ---
+    # Mobilde veritabanı dosyasını uygulamanın özel klasörüne koyarız
     try:
-        klasor_yolu = os.path.dirname(os.path.abspath(__file__))
-        db_yolu = os.path.join(klasor_yolu, "turnuva_mobil.db")
-        
-        conn = sqlite3.connect(db_yolu, check_same_thread=False)
+        conn = sqlite3.connect(db_file, check_same_thread=False)
         cursor = conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS maclar (
@@ -31,24 +33,28 @@ def main(page: ft.Page):
         return
 
     # --- ARAYÜZ ELEMANLARI ---
-    lbl_baslik = ft.Text("PUAN DURUMU", size=30, weight="bold", text_align="center")
+    lbl_baslik = ft.Text("PES ŞAMPİYONLAR LİGİ", size=30, weight="bold", text_align="center")
     
-    txt_takim1 = ft.Text("KNORGY FC", size=20, weight="bold", color="#833a2e")
-    txt_takim2 = ft.Text("EFSANE FUTBOL", size=20, weight="bold", color="#3d70ff")
+    # --- LOGOLAR (SADELEŞTİRİLDİ) ---
+    # Sadece dosya adını yazıyoruz. Flet bunu 'assets' klasöründe otomatik bulacak.
+    img_takim1 = ft.Image(src="takim1.png", width=80, height=80, fit="contain")
+    img_takim2 = ft.Image(src="takim2.png", width=80, height=80, fit="contain")
 
-    txt_skor = ft.Text("0 - 0", size=50, weight="bold")
+    txt_takim1 = ft.Text("KNORGY FC", size=18, weight="bold", color="#833a2e", text_align="center")
+    txt_takim2 = ft.Text("EFSANE FUTBOL", size=18, weight="bold", color="#3d70ff", text_align="center")
+
+    txt_skor = ft.Text("0 - 0", size=45, weight="bold")
     
-    txt_av1 = ft.Text("Av: 0", color="grey")
-    txt_av2 = ft.Text("Av: 0", color="grey")
+    txt_av1 = ft.Text("Av: 0", color="grey", size=12)
+    txt_av2 = ft.Text("Av: 0", color="grey", size=12)
     
-    txt_gol1 = ft.Text("Gol: 0", color="#a85c50", weight="bold")
-    txt_gol2 = ft.Text("Gol: 0", color="#6e91ff", weight="bold")
+    txt_gol1 = ft.Text("Gol: 0", color="#a85c50", weight="bold", size=14)
+    txt_gol2 = ft.Text("Gol: 0", color="#6e91ff", weight="bold", size=14)
 
     txt_toplam = ft.Text("Oynanan Maç: 0", size=12)
     liste_gecmis = ft.Column(spacing=10)
 
     # --- FONKSİYONLAR ---
-
     def verileri_getir():
         cursor.execute("SELECT * FROM maclar ORDER BY id DESC")
         maclar = cursor.fetchall()
@@ -78,14 +84,12 @@ def main(page: ft.Page):
                 yazi += " (EFSANE)"
                 renk = "#3d70ff"
 
-            # --- KESİN ÇÖZÜM (Container Yöntemi) ---
-            # Hazır butonlar yerine, içine 'X' yazısı koyduğumuz tıklanabilir bir kutu yapıyoruz.
-            # Bu yöntem Flet'in her sürümünde çalışır, hata vermez.
+            # Silme Butonu
             sil_butonu = ft.Container(
                 content=ft.Text("X", color="red", weight="bold"),
-                data=mac_id, # ID'yi buraya gizledik
-                on_click=sil_tusuna_basildi, # Tıklanınca çalışacak
-                padding=10, # Dokunmatik için alanı genişlettik
+                data=mac_id, 
+                on_click=sil_tusuna_basildi,
+                padding=10, 
             )
 
             satir = ft.Container(
@@ -111,7 +115,6 @@ def main(page: ft.Page):
         page.update()
 
     def sil_tusuna_basildi(e):
-        # Tıklanan kutunun ID'sini al
         silinecek_id = e.control.data
         if silinecek_id is not None:
             cursor.execute("DELETE FROM maclar WHERE id = ?", (silinecek_id,))
@@ -142,9 +145,24 @@ def main(page: ft.Page):
     # --- SAYFA DÜZENİ ---
     takim_bilgileri = ft.Row(
         [
-            ft.Column([txt_takim1, txt_av1, txt_gol1], alignment="center", horizontal_alignment="center"),
+            # SOL TAKIM
+            ft.Column([
+                img_takim1, 
+                txt_takim1, 
+                txt_av1, 
+                txt_gol1
+            ], alignment="center", horizontal_alignment="center"),
+            
+            # ORTA
             txt_skor,
-            ft.Column([txt_takim2, txt_av2, txt_gol2], alignment="center", horizontal_alignment="center"),
+            
+            # SAĞ TAKIM
+            ft.Column([
+                img_takim2, 
+                txt_takim2, 
+                txt_av2, 
+                txt_gol2
+            ], alignment="center", horizontal_alignment="center"),
         ],
         alignment="spaceEvenly",
         vertical_alignment="center"
@@ -170,5 +188,7 @@ def main(page: ft.Page):
 
     verileri_getir()
 
-# Başlat
-ft.app(target=main)
+# --- BAŞLATMA ---
+# assets_dir="assets" komutu, APK içinde "assets" klasörünü kök dizin yapar.
+# Böylece src="takim1.png" dediğimizde direkt o klasöre bakar.
+ft.app(target=main, assets_dir="assets")
