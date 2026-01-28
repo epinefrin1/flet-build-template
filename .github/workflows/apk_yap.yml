@@ -36,10 +36,11 @@ jobs:
         pip install flet
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Flet APK Build
+    - name: Flet APK Build (Otomatik Onaylı)
       run: |
-        # Hatalı komutları sildik. En sade ve çalışan hali budur:
-        flet build apk --project "TurnuvaApp" --verbose
+        # 'yes' komutu tüm sorulara otomatik 'y' (evet) cevabını verir.
+        # Ayrıca 'main.py' dosyasını özellikle belirttik ki aramasın.
+        yes | flet build apk main.py --project "TurnuvaApp" --org "com.turnuva.app" --verbose
 
     - name: APK Dosyasını Yükle
       uses: actions/upload-artifact@v4
