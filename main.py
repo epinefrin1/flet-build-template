@@ -3,8 +3,7 @@ import sqlite3
 from datetime import datetime
 import os
 
-# --- VERİTABANI DOSYA YOLU ---
-# Veritabanı için 'os' kullanmak zorundayız ama assets için kullanmayacağız.
+# Veritabanı dosya adı
 db_file = "turnuva_mobil.db"
 
 def main(page: ft.Page):
@@ -15,7 +14,6 @@ def main(page: ft.Page):
     page.padding = 20
     
     # --- VERİTABANI BAĞLANTISI ---
-    # Mobilde veritabanı dosyasını uygulamanın özel klasörüne koyarız
     try:
         conn = sqlite3.connect(db_file, check_same_thread=False)
         cursor = conn.cursor()
@@ -33,12 +31,12 @@ def main(page: ft.Page):
         return
 
     # --- ARAYÜZ ELEMANLARI ---
-    lbl_baslik = ft.Text("PES ŞAMPİYONLAR LİGİ", size=30, weight="bold", text_align="center")
+    lbl_baslik = ft.Text("PUAN DURUMU", size=30, weight="bold", text_align="center")
     
-    # --- LOGOLAR (SADELEŞTİRİLDİ) ---
-    # Sadece dosya adını yazıyoruz. Flet bunu 'assets' klasöründe otomatik bulacak.
-    img_takim1 = ft.Image(src="takim1.png", width=80, height=80, fit="contain")
-    img_takim2 = ft.Image(src="takim2.png", width=80, height=80, fit="contain")
+    # --- LOGOLAR (DÜZELTİLDİ: BAŞINA / EKLENDİ) ---
+    # Başındaki / işareti "assets klasörünün en tepesine bak" demektir.
+    img_takim1 = ft.Image(src="/takim1.png", width=80, height=80, fit="contain")
+    img_takim2 = ft.Image(src="/takim2.png", width=80, height=80, fit="contain")
 
     txt_takim1 = ft.Text("KNORGY FC", size=18, weight="bold", color="#833a2e", text_align="center")
     txt_takim2 = ft.Text("EFSANE FUTBOL", size=18, weight="bold", color="#3d70ff", text_align="center")
@@ -189,6 +187,6 @@ def main(page: ft.Page):
     verileri_getir()
 
 # --- BAŞLATMA ---
-# assets_dir="assets" komutu, APK içinde "assets" klasörünü kök dizin yapar.
-# Böylece src="takim1.png" dediğimizde direkt o klasöre bakar.
+# assets_dir="assets" klasörünü tanımladık.
+# Resimlere erişirken artık /takim1.png diyeceğiz.
 ft.app(target=main, assets_dir="assets")
